@@ -32,6 +32,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.HOMEBREW_PAT }}
         run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "HOMEBREW_PAT not set — skipping cask auto-bump (bump it manually)."
+            exit 0
+          fi
           version="${GITHUB_REF_NAME#v}"
           gh workflow run update-cask.yml \
             --repo gosantos/homebrew-no-mail \
