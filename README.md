@@ -13,7 +13,7 @@ You can toggle the app's functionality via the menu bar icon with a simple left 
 ### Homebrew
 
 ```bash
-brew install --cask no-mail
+brew install --cask gosantos/no-mail/no-mail
 ```
 
 ### Direct download

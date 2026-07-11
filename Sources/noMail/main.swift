@@ -69,9 +69,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func terminate(_ app: NSRunningApplication) {
-        if !app.terminate() {
-            app.forceTerminate()
-        }
+        // Force-terminate (SIGKILL-equivalent). A polite `terminate()` only posts a
+        // Quit Apple Event, which Mail ignores or defers, so it would keep running.
+        app.forceTerminate()
     }
 
     private func openReplacementIfNeeded() {
