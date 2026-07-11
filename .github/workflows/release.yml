@@ -1,0 +1,36 @@
+name: Release
+
+# Push a tag like v1.2.0 and this builds noMail.app, zips it, publishes a
+# GitHub Release with the zip, and prints the sha256 for the Homebrew cask.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Derive version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and zip
+        run: ./build.sh "${{ steps.version.outputs.version }}"
+
+      - name: Compute sha256
+        run: |
+          echo "### Cask sha256" >> "$GITHUB_STEP_SUMMARY"
+          shasum -a 256 "build/noMail-${{ steps.version.outputs.version }}.zip" \
+            | awk '{print $1}' | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/noMail-${{ steps.version.outputs.version }}.zip
+          generate_release_notes: true
