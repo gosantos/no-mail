@@ -1,4 +1,5 @@
 import Cocoa
+import ServiceManagement
 
 // MARK: - Configuration keys (read/writable via `defaults` on the app's domain)
 
@@ -49,6 +50,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         // Handle the case where Mail is already running when we start up.
         if isEnabled { terminateBlockedApps() }
+
+        do {
+            try SMAppService.mainApp.register()
+        } catch {
+            print("noMail: failed to register login item: \(error.localizedDescription)")
+        }
     }
 
     // MARK: Blocking
